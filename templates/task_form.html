@@ -91,7 +91,7 @@
                 
                 <div class="card mb-4">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Subtasks*</h5>
+                        <h5 class="mb-0">Subtasks (Optional)</h5>
                         <button type="button" id="add-subtask-btn" class="btn btn-sm btn-outline-primary">
                             <i class="fas fa-plus me-1"></i>Add Subtask
                         </button>
@@ -113,19 +113,7 @@
                             {% endfor %}
                             
                             {% if form.subtasks|length == 0 %}
-                            <div class="subtask-item mb-2">
-                                <div class="input-group">
-                                    <input type="text" name="subtasks-0-title" class="form-control" 
-                                           placeholder="Subtask title" required>
-                                    <div class="input-group-text">
-                                        <input type="checkbox" name="subtasks-0-is_completed" 
-                                               class="form-check-input">
-                                    </div>
-                                    <button type="button" class="btn btn-outline-danger remove-subtask-btn">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
+                            <p class="text-muted text-center">No subtasks yet. Click "Add Subtask" to create one.</p>
                             {% endif %}
                         </div>
                     </div>

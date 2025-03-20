@@ -39,7 +39,7 @@ class TaskForm(FlaskForm):
     category_id = SelectField('Category', coerce=int, validators=[DataRequired()])
     is_recurring = BooleanField('Daily Recurring Task')
     track_progress = BooleanField('Track Progress for this Task')
-    subtasks = FieldList(FormField(SubTaskForm), min_entries=1)
+    subtasks = FieldList(FormField(SubTaskForm), min_entries=0)
     add_subtask = SubmitField('Add Subtask')
     submit = SubmitField('Save Task')
 

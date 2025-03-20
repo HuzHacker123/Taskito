@@ -133,20 +133,23 @@ def new_task():
         db.session.add(task)
         db.session.commit()
         
-        # Add subtasks
-        for subtask_form in form.subtasks:
-            subtask = SubTask(
-                title=subtask_form.title.data,
-                is_completed=subtask_form.is_completed.data,
-                task_id=task.id
-            )
-            db.session.add(subtask)
-        
-        db.session.commit()
-        
-        # Update task progress based on subtasks
-        task.update_progress_from_subtasks()
-        db.session.commit()
+        # Add subtasks if there are any
+        if form.subtasks.data:
+            for subtask_form in form.subtasks:
+                # Check if the title is not empty
+                if subtask_form.title.data and subtask_form.title.data.strip():
+                    subtask = SubTask(
+                        title=subtask_form.title.data,
+                        is_completed=subtask_form.is_completed.data,
+                        task_id=task.id
+                    )
+                    db.session.add(subtask)
+            
+            db.session.commit()
+            
+            # Update task progress based on subtasks
+            task.update_progress_from_subtasks()
+            db.session.commit()
         
         flash('Task created successfully!', 'success')
         return redirect(url_for('dashboard'))
