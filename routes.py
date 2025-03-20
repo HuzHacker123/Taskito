@@ -349,7 +349,8 @@ def achievements():
         achievements=user_achievements,
         completed_tasks=completed_tasks_count,
         high_priority_completed=high_priority_completed,
-        streak=streak
+        streak=streak,
+        Achievement=Achievement
     )
 
 @app.route('/progress')
@@ -416,13 +417,18 @@ def profile():
     achievements_count = Achievement.query.filter_by(user_id=current_user.id).count()
     categories_count = Category.query.filter_by(user_id=current_user.id).count()
     
+    # Get recent achievements for display
+    recent_achievements = Achievement.query.filter_by(user_id=current_user.id).order_by(Achievement.earned_at.desc()).limit(3).all()
+    
     return render_template(
         'profile.html',
         title='Profile',
         tasks_count=tasks_count,
         completed_count=completed_count,
         achievements_count=achievements_count,
-        categories_count=categories_count
+        categories_count=categories_count,
+        Achievement=Achievement,
+        recent_achievements=recent_achievements
     )
 
 @app.route('/filter_tasks', methods=['POST'])

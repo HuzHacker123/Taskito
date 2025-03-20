@@ -90,11 +90,9 @@
                     </h5>
                 </div>
                 <div class="card-body">
-                    {% set achievements = current_user.achievements.order_by(Achievement.earned_at.desc()).limit(3).all() %}
-                    
-                    {% if achievements %}
+                    {% if recent_achievements %}
                     <div class="row">
-                        {% for achievement in achievements %}
+                        {% for achievement in recent_achievements %}
                         <div class="col-md-4 mb-3">
                             <div class="card trophy-card">
                                 <div class="card-body text-center">
