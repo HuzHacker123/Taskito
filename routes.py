@@ -186,22 +186,33 @@ def edit_task(task_id):
         task.is_recurring = form.is_recurring.data
         task.track_progress = form.track_progress.data
         
-        # Delete existing subtasks and add new ones
+        # Delete existing subtasks
         SubTask.query.filter_by(task_id=task.id).delete()
         
-        for subtask_form in form.subtasks:
-            subtask = SubTask(
-                title=subtask_form.title.data,
-                is_completed=subtask_form.is_completed.data,
-                task_id=task.id
-            )
-            db.session.add(subtask)
-        
-        db.session.commit()
-        
-        # Update task progress based on subtasks
-        task.update_progress_from_subtasks()
-        db.session.commit()
+        # Add new subtasks if there are any
+        if form.subtasks.data:
+            for subtask_form in form.subtasks:
+                # Check if the title is not empty
+                if subtask_form.title.data and subtask_form.title.data.strip():
+                    subtask = SubTask(
+                        title=subtask_form.title.data,
+                        is_completed=subtask_form.is_completed.data,
+                        task_id=task.id
+                    )
+                    db.session.add(subtask)
+            
+            db.session.commit()
+            
+            # Update task progress based on subtasks
+            task.update_progress_from_subtasks()
+            db.session.commit()
+        else:
+            # If no subtasks, set progress based on completion status
+            if task.is_completed:
+                task.progress = 100
+            else:
+                task.progress = 0
+            db.session.commit()
         
         flash('Task updated successfully!', 'success')
         return redirect(url_for('dashboard'))

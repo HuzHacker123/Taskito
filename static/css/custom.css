@@ -39,13 +39,13 @@ body {
 
 .sidebar .nav-link {
     padding: 10px 20px;
-    color: var(--bs-light);
+    color: var(--bs-dark);
     border-radius: 0;
     margin-bottom: 5px;
 }
 
 .sidebar .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .sidebar .nav-link.active {
