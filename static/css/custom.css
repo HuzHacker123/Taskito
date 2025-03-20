@@ -1,0 +1,231 @@
+/* Custom styles for Taskito app */
+
+:root {
+    --sidebar-width: 250px;
+    --header-height: 60px;
+}
+
+/* General layout */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+}
+
+.content-area {
+    flex: 1;
+    padding: 20px;
+    transition: margin-left 0.3s;
+}
+
+/* Sidebar styles */
+.sidebar {
+    width: var(--sidebar-width);
+    position: fixed;
+    height: calc(100vh - var(--header-height));
+    top: var(--header-height);
+    left: 0;
+    z-index: 100;
+    padding: 20px 0;
+    box-shadow: 1px 0 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    padding: 10px 20px;
+    color: var(--bs-light);
+    border-radius: 0;
+    margin-bottom: 5px;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+.sidebar .nav-link i {
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Header styles */
+.app-header {
+    height: var(--header-height);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.app-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Task styles */
+.task-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: 15px;
+}
+
+.task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.priority-high {
+    border-left: 4px solid var(--bs-danger);
+}
+
+.priority-medium {
+    border-left: 4px solid var(--bs-warning);
+}
+
+.priority-low {
+    border-left: 4px solid var(--bs-info);
+}
+
+.task-actions {
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.task-card:hover .task-actions {
+    opacity: 1;
+}
+
+.subtask-item {
+    transition: all 0.2s;
+}
+
+.completed-subtask {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* Progress tracking */
+.progress {
+    height: 10px;
+    border-radius: 5px;
+}
+
+.progress-label {
+    font-size: 0.8rem;
+    margin-top: 5px;
+}
+
+/* Achievement styles */
+.trophy-card {
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.trophy-card:hover {
+    transform: translateY(-5px);
+}
+
+.trophy-bronze {
+    color: #CD7F32;
+}
+
+.trophy-silver {
+    color: #C0C0C0;
+}
+
+.trophy-gold {
+    color: #FFD700;
+}
+
+.trophy-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.achievement-date {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+/* Custom form styles */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Dashboard stats cards */
+.stats-card {
+    border-radius: 10px;
+    transition: transform 0.2s;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+}
+
+.stats-icon {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+/* Chart containers */
+.chart-container {
+    height: 300px;
+    margin-bottom: 20px;
+}
+
+/* Toast container */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+}
+
+/* Login & Register pages */
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-logo h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+}
+
+/* Profile page */
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.profile-stat-card {
+    padding: 15px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.profile-stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.profile-stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}

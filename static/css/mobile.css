@@ -1,0 +1,126 @@
+/* Mobile styles for Taskito app */
+
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 100%;
+    }
+    
+    /* Adjust main layout for mobile */
+    .content-area {
+        margin-left: 0 !important;
+        width: 100%;
+    }
+    
+    /* Make sidebar hidden by default on mobile */
+    .sidebar {
+        transform: translateX(-100%);
+        box-shadow: none;
+    }
+    
+    .sidebar.show {
+        transform: translateX(0);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Add overlay when sidebar is open */
+    body.sidebar-open::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 99;
+    }
+    
+    /* Adjust header for mobile */
+    .app-header {
+        padding: 0 15px;
+    }
+    
+    .app-logo {
+        font-size: 1.2rem;
+    }
+    
+    /* Mobile-friendly task cards */
+    .task-card {
+        margin-bottom: 15px;
+    }
+    
+    /* Make task actions always visible on mobile */
+    .task-actions {
+        opacity: 1;
+    }
+    
+    /* Adjust chart containers */
+    .chart-container {
+        height: 250px;
+    }
+    
+    /* Adjust form layout */
+    .form-container {
+        padding: 0 10px;
+    }
+    
+    /* Make form inputs larger for touch */
+    .form-control, .btn {
+        font-size: 1rem;
+        padding: 10px 15px;
+    }
+    
+    /* Adjust profile stats for mobile */
+    .profile-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Adjust achievement cards for mobile */
+    .achievement-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+    
+    /* Adjust filter dropdowns */
+    .filter-controls {
+        flex-direction: column;
+    }
+    
+    .filter-controls .form-group {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    /* Adjust task list for mobile */
+    .task-list {
+        padding: 0;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 576px) {
+    /* Further adjustments for very small screens */
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-row {
+        flex-direction: column;
+    }
+    
+    .stats-card {
+        margin-bottom: 15px;
+    }
+    
+    /* Simplify task cards */
+    .task-card .card-body {
+        padding: 15px 10px;
+    }
+    
+    /* Make buttons in task cards stack on small screens */
+    .task-card .btn-group {
+        flex-direction: column;
+    }
+    
+    .task-card .btn {
+        margin-bottom: 5px;
+    }
+}

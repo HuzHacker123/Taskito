@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}New Category - Taskito{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">
+        <i class="fas fa-tags me-2"></i>New Category
+    </h1>
+    
+    <div class="card form-container">
+        <div class="card-body">
+            <form method="post" action="{{ url_for('new_category') }}">
+                {{ form.hidden_tag() }}
+                
+                <div class="mb-3">
+                    <label for="{{ form.name.id }}" class="form-label">Category Name</label>
+                    {{ form.name(class="form-control", placeholder="Enter category name") }}
+                    {% for error in form.name.errors %}
+                        <div class="text-danger">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-1"></i>Back
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Create Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-info-circle me-2"></i>About Categories
+            </h5>
+        </div>
+        <div class="card-body">
+            <p>Categories help you organize your tasks into logical groups. Examples include:</p>
+            <ul>
+                <li><strong>Work</strong> - Tasks related to your job or professional projects</li>
+                <li><strong>Personal</strong> - Tasks for your personal life and activities</li>
+                <li><strong>Shopping</strong> - Shopping lists and items to purchase</li>
+                <li><strong>Health</strong> - Exercise routines, medical appointments, etc.</li>
+                <li><strong>Learning</strong> - Courses, books to read, skills to develop</li>
+            </ul>
+            <p>You can create as many custom categories as you need to keep your tasks organized.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

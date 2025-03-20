@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Taskito{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mb-4">
+        <i class="fas fa-home me-2"></i>Dashboard
+    </h1>
+    
+    <!-- Stats Cards Row -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-primary text-white stats-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Tasks Due Today</h6>
+                            <h2 class="mb-0">{{ today_tasks|length }}</h2>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-calendar-day"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-warning text-dark stats-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Overdue Tasks</h6>
+                            <h2 class="mb-0">{{ overdue_tasks|length }}</h2>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-info text-dark stats-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Upcoming Tasks</h6>
+                            <h2 class="mb-0">{{ upcoming_tasks|length }}</h2>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card bg-success text-white stats-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title">Completed Tasks</h6>
+                            <h2 class="mb-0">{{ progress_stats.completed }}</h2>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Task Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="task-status-chart" 
+                                data-not-started="{{ progress_stats.not_started }}"
+                                data-in-progress="{{ progress_stats.in_progress }}"
+                                data-completed="{{ progress_stats.completed }}"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Task Completion (Last 7 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="completion-chart" 
+                                data-labels='{{ completion_stats.labels|tojson }}'
+                                data-data='{{ completion_stats.data|tojson }}'></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filter Row -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-filter me-2"></i>Filter Tasks
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row filter-controls">
+                <div class="col-md-4 mb-3">
+                    <label for="category-filter" class="form-label">Category</label>
+                    <select id="category-filter" class="form-select">
+                        <option value="all">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="priority-filter" class="form-label">Priority</label>
+                    <select id="priority-filter" class="form-select">
+                        <option value="all">All Priorities</option>
+                        <option value="3">High</option>
+                        <option value="2">Medium</option>
+                        <option value="1">Low</option>
+                    </select>
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label for="status-filter" class="form-label">Status</label>
+                    <select id="status-filter" class="form-select">
+                        <option value="all">All Tasks</option>
+                        <option value="today">Due Today</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="overdue">Overdue</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Filtered Tasks Container -->
+    <div id="filtered-tasks-container">
+        <!-- Will be populated by JavaScript -->
+    </div>
+    
+    <!-- Tasks Section -->
+    {% if today_tasks %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-calendar-day me-2"></i>Today's Tasks
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="task-list">
+                {% for task in today_tasks %}
+                <div class="card task-card priority-{% if task.priority == 3 %}high{% elif task.priority == 2 %}medium{% else %}low{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">{{ task.title }}</h5>
+                            <span class="badge {% if task.priority == 3 %}bg-danger{% elif task.priority == 2 %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
+                                {% if task.priority == 3 %}High{% elif task.priority == 2 %}Medium{% else %}Low{% endif %} Priority
+                            </span>
+                        </div>
+                        
+                        <p class="card-text">{{ task.description }}</p>
+                        
+                        <div class="mb-2">
+                            <span class="badge bg-secondary">{{ task.category.name }}</span>
+                            <small class="text-muted ms-2 due-date" data-date="{{ task.due_date }}">
+                                Due at {{ task.due_time.strftime('%H:%M') }}
+                            </small>
+                            {% if task.is_recurring %}
+                                <span class="badge bg-primary ms-2">
+                                    <i class="fas fa-sync-alt me-1"></i>Recurring
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if task.track_progress %}
+                        <div class="progress mb-2">
+                            <div id="progress-bar-{{ task.id }}" class="progress-bar 
+                                {% if task.progress < 30 %}bg-danger
+                                {% elif task.progress < 70 %}bg-warning
+                                {% else %}bg-success{% endif %}" 
+                                role="progressbar" style="width: {{ task.progress }}%"
+                                aria-valuenow="{{ task.progress }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span id="progress-value-{{ task.id }}" class="progress-label">{{ task.progress }}%</span>
+                            <input type="range" class="form-range progress-range" min="0" max="100" step="5" 
+                                   value="{{ task.progress }}" data-task-id="{{ task.id }}">
+                        </div>
+                        {% endif %}
+                        
+                        {% if task.subtasks.count() > 0 %}
+                        <div class="subtasks-list mb-3">
+                            <h6>Subtasks:</h6>
+                            {% for subtask in task.subtasks %}
+                            <div class="subtask-item {% if subtask.is_completed %}completed-subtask{% endif %}">
+                                <div class="form-check">
+                                    <input class="form-check-input subtask-checkbox" type="checkbox"
+                                           id="subtask-{{ subtask.id }}" 
+                                           {% if subtask.is_completed %}checked{% endif %}
+                                           data-task-id="{{ task.id }}"
+                                           data-subtask-id="{{ subtask.id }}">
+                                    <label class="form-check-label" for="subtask-{{ subtask.id }}">
+                                        {{ subtask.title }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="task-actions d-flex justify-content-end">
+                            <a href="{{ url_for('edit_task', task_id=task.id) }}" class="btn btn-sm btn-outline-primary me-2">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                            <form action="{{ url_for('complete_task', task_id=task.id) }}" method="post" class="d-inline me-2">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fas fa-check me-1"></i>Complete
+                                </button>
+                            </form>
+                            <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger delete-task-btn">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if overdue_tasks %}
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-exclamation-triangle me-2"></i>Overdue Tasks
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="task-list">
+                {% for task in overdue_tasks %}
+                <div class="card task-card priority-{% if task.priority == 3 %}high{% elif task.priority == 2 %}medium{% else %}low{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">{{ task.title }}</h5>
+                            <span class="badge {% if task.priority == 3 %}bg-danger{% elif task.priority == 2 %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
+                                {% if task.priority == 3 %}High{% elif task.priority == 2 %}Medium{% else %}Low{% endif %} Priority
+                            </span>
+                        </div>
+                        
+                        <p class="card-text">{{ task.description }}</p>
+                        
+                        <div class="mb-2">
+                            <span class="badge bg-secondary">{{ task.category.name }}</span>
+                            <small class="text-danger ms-2 fw-bold due-date" data-date="{{ task.due_date }}">
+                                Due on {{ task.due_date.strftime('%Y-%m-%d') }} at {{ task.due_time.strftime('%H:%M') }}
+                            </small>
+                        </div>
+                        
+                        <div class="task-actions d-flex justify-content-end">
+                            <a href="{{ url_for('edit_task', task_id=task.id) }}" class="btn btn-sm btn-outline-primary me-2">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                            <form action="{{ url_for('complete_task', task_id=task.id) }}" method="post" class="d-inline me-2">
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fas fa-check me-1"></i>Complete
+                                </button>
+                            </form>
+                            <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger delete-task-btn">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if upcoming_tasks %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-calendar-alt me-2"></i>Upcoming Tasks
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="task-list">
+                {% for task in upcoming_tasks %}
+                <div class="card task-card priority-{% if task.priority == 3 %}high{% elif task.priority == 2 %}medium{% else %}low{% endif %}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <h5 class="card-title">{{ task.title }}</h5>
+                            <span class="badge {% if task.priority == 3 %}bg-danger{% elif task.priority == 2 %}bg-warning text-dark{% else %}bg-info text-dark{% endif %}">
+                                {% if task.priority == 3 %}High{% elif task.priority == 2 %}Medium{% else %}Low{% endif %} Priority
+                            </span>
+                        </div>
+                        
+                        <p class="card-text">{{ task.description }}</p>
+                        
+                        <div class="mb-2">
+                            <span class="badge bg-secondary">{{ task.category.name }}</span>
+                            <small class="text-muted ms-2 due-date" data-date="{{ task.due_date }}">
+                                Due on {{ task.due_date.strftime('%Y-%m-%d') }} at {{ task.due_time.strftime('%H:%M') }}
+                            </small>
+                        </div>
+                        
+                        <div class="task-actions d-flex justify-content-end">
+                            <a href="{{ url_for('edit_task', task_id=task.id) }}" class="btn btn-sm btn-outline-primary me-2">
+                                <i class="fas fa-edit me-1"></i>Edit
+                            </a>
+                            <form action="{{ url_for('delete_task', task_id=task.id) }}" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger delete-task-btn">
+                                    <i class="fas fa-trash me-1"></i>Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if not today_tasks and not upcoming_tasks and not overdue_tasks %}
+    <div class="alert alert-info">
+        <h4 class="alert-heading">No tasks yet!</h4>
+        <p>You don't have any tasks scheduled. Get started by creating your first task.</p>
+        <hr>
+        <p class="mb-0">
+            <a href="{{ url_for('new_task') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Create Task
+            </a>
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

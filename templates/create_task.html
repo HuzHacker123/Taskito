@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Task - Taskito{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-plus-circle me-2"></i>Create New Task</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('create_task') }}" class="custom-form">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Task Title *</label>
+                        {{ form.title(class="form-control", id="title", placeholder="Enter task title") }}
+                        {% if form.title.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.title.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description *</label>
+                        {{ form.description(class="form-control", id="description", rows="3", placeholder="Enter task description") }}
+                        {% if form.description.errors %}
+                        <div class="invalid-feedback d-block">
+                            {% for error in form.description.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="due_date" class="form-label">Due Date *</label>
+                            {{ form.due_date(class="form-control", id="due_date", type="date") }}
+                            {% if form.due_date.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.due_date.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="due_time" class="form-label">Due Time *</label>
+                            {{ form.due_time(class="form-control", id="due_time", type="time") }}
+                            {% if form.due_time.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.due_time.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="priority" class="form-label">Priority *</label>
+                            {{ form.priority(class="form-select", id="priority") }}
+                            {% if form.priority.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.priority.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="category_id" class="form-label">Category *</label>
+                            {{ form.category_id(class="form-select", id="category_id") }}
+                            {% if form.category_id.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.category_id.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Subtasks</label>
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" id="new-subtask" placeholder="Enter subtask">
+                            <button class="btn btn-outline-secondary" type="button" id="add-subtask">Add</button>
+                        </div>
+                        {{ form.subtasks(class="form-control", id="subtasks", style="display: none;") }}
+                        
+                        <ul class="list-group subtasks-list" id="subtasks-list">
+                            <!-- Subtasks will be added here -->
+                        </ul>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        {{ form.recurring(class="form-check-input", id="recurring") }}
+                        <label class="form-check-label" for="recurring">Daily Recurring Task</label>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        {{ form.track_progress(class="form-check-input", id="track_progress") }}
+                        <label class="form-check-label" for="track_progress">Track Progress for this Task</label>
+                    </div>
+                    
+                    <div id="progress-input-group" class="mb-3" style="display: none;">
+                        <label for="initial-progress" class="form-label">Initial Progress (0-100%)</label>
+                        <input type="range" class="form-range" id="initial-progress" min="0" max="100" step="5" value="0">
+                        <output for="initial-progress">0%</output>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">Create Task</button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Progress slider output
+        const initialProgress = document.getElementById('initial-progress');
+        const output = document.querySelector('output[for="initial-progress"]');
+        
+        if (initialProgress && output) {
+            initialProgress.addEventListener('input', function() {
+                output.textContent = this.value + '%';
+            });
+        }
+    });
+</script>
+{% endblock %}
