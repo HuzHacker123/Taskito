@@ -23,6 +23,7 @@
 <body>
     <!-- Toast container for notifications -->
     <div id="toast-container"></div>
+    <div id="alert-container"></div>
     
     {% if current_user.is_authenticated %}
     <!-- Header -->
@@ -143,6 +144,7 @@
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script src="{{ url_for('static', filename='js/chart-setup.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/notifications.js') }}"></script>
     
     {% block extra_js %}{% endblock %}
 </body>

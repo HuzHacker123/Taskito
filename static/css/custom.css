@@ -182,12 +182,15 @@ body {
     margin-bottom: 20px;
 }
 
-/* Toast container */
-#toast-container {
+/* Toast and alert containers */
+#toast-container,
+#alert-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
     z-index: 1050;
+    min-width: 300px;
+    max-width: 350px;
 }
 
 /* Login & Register pages */

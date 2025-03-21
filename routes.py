@@ -97,6 +97,18 @@ def dashboard():
     # Get completion stats
     completion_stats = get_task_completion_stats(current_user.id)
     
+    # Prepare tasks data for notifications
+    tasks_data = []
+    for task in today_tasks + upcoming_tasks + overdue_tasks:
+        task_data = {
+            'id': task.id,
+            'title': task.title,
+            'due_date': task.due_date.isoformat(),
+            'due_time': task.due_time.strftime('%H:%M'),
+            'completed': task.is_completed
+        }
+        tasks_data.append(task_data)
+    
     return render_template(
         'dashboard.html', 
         title='Dashboard',
@@ -105,7 +117,8 @@ def dashboard():
         overdue_tasks=overdue_tasks,
         categories=categories,
         progress_stats=progress_stats,
-        completion_stats=completion_stats
+        completion_stats=completion_stats,
+        tasks_data=json.dumps(tasks_data)
     )
 
 @app.route('/task/new', methods=['GET', 'POST'])
