@@ -182,7 +182,11 @@ def edit_task(task_id):
     
     # Pre-populate subtasks
     if request.method == 'GET':
-        form.subtasks.pop_entry()  # Remove the default empty subtask
+        # Clear any existing entries
+        while len(form.subtasks) > 0:
+            form.subtasks.pop_entry()
+            
+        # Add the task's subtasks
         for subtask in task.subtasks:
             form.subtasks.append_entry({
                 'title': subtask.title,
