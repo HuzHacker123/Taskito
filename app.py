@@ -23,7 +23,12 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET", "taskito_secret_key")
 
 # Configure the database
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///taskito.db")
+# For Vercel/serverless deployment, use in-memory SQLite
+# Note: Data will not persist between requests in serverless environments
+if os.environ.get("VERCEL"):
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///:memory:"
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL", "sqlite:///taskito.db")
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_recycle": 300,
     "pool_pre_ping": True,
