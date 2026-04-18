@@ -42,18 +42,18 @@ login_manager.login_message = 'Please log in to access this page.'
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
 
-# Import routes after initializing everything to avoid circular imports
-with app.app_context():
-    # Import models to ensure they're registered with SQLAlchemy
-    from models import User, Task, Category, SubTask, Achievement
-    
-    # Create all tables if they don't exist
-    db.create_all()
-    
-    # Import routes
-    from routes import *
-    
-    # Register user loader for Flask-Login
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
+# Import models to ensure they're registered with SQLAlchemy
+from models import User, Task, Category, SubTask, Achievement
+
+# Import routes
+from routes import *
+
+# Register user loader for Flask-Login
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+# Create database tables when the app starts (not during import)
+def create_tables():
+    with app.app_context():
+        db.create_all()
