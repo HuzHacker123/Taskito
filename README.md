@@ -17,7 +17,7 @@ Taskito is a Flask-based task management application with user authentication, t
 ## Setup
 1. Open a terminal in the project root:
    ```bash
-   cd "/Users/huzefa/CodeWithHuzefa/Taskito 2.0/TaskMaster"
+   cd "/Users/huzefa/CodeWithHuzefa/Taskito"
    ```
 
 2. Create and activate a virtual environment:
