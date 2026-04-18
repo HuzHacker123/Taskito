@@ -90,10 +90,18 @@ The `vercel.json` file configures:
 ### Database Notes
 
 For Vercel deployment:
-- SQLite works for simple deployments but data may not persist between function calls
-- For production, consider PostgreSQL or another cloud database
-- Database files are ephemeral on Vercel - data may not persist between deployments
-- Consider using a database service like Railway or PlanetScale for persistent data
+- **Current setup uses in-memory SQLite** - data will NOT persist between sessions
+- For production, use a persistent database:
+  - **Railway PostgreSQL**: Connect your GitHub repo, get free PostgreSQL
+  - **Neon**: Serverless PostgreSQL, works great with Vercel
+  - **Supabase**: PostgreSQL with real-time features
+  - **PlanetScale**: MySQL-compatible database
+
+To use a persistent database:
+1. Create a database service (Railway, Neon, etc.)
+2. Get the connection string
+3. Set `DATABASE_URL` environment variable in Vercel dashboard
+4. Example: `postgresql://user:password@host:port/database`
 
 ### Important Vercel Notes
 

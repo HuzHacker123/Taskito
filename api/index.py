@@ -3,7 +3,8 @@ from app import app, create_tables
 
 # Set default environment variables for Vercel
 os.environ.setdefault('SESSION_SECRET', 'vercel_deployment_secret_change_this')
-os.environ.setdefault('DATABASE_URL', 'sqlite:///taskito.db')
+# Use in-memory SQLite for Vercel (data won't persist, but app will work)
+os.environ.setdefault('DATABASE_URL', 'sqlite:///:memory:')
 os.environ.setdefault('FLASK_DEBUG', 'false')
 
 # Create database tables on startup
