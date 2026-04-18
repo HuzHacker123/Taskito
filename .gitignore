@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+pip-wheel-metadata/
+
+# Flask instance folder
+instance/taskito.db
+instance/*.py
+
+# Environment files
+.env
+.env.*
+
+# Editor files
+.DS_Store
+.vscode/
+.idea/
+*.swp
